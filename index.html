@@ -8,37 +8,40 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --primary-color: #2a9d8f;
-            --background-color: #1d3557;
-            --card-bg: #264653;
-            --text-color: #f1faee;
+            --primary-color: #00ff00;
+            --background-color: #0a0a0a;
+            --card-bg: #121212;
+            --text-color: #ffffff;
+            --border-color: #2a2a2a;
         }
 
         body {
             background: var(--background-color);
             color: var(--text-color);
-            font-family: 'Roboto Mono', monospace;
+            font-family: 'Courier New', monospace;
             min-height: 100vh;
         }
 
         .header {
-            background: rgba(0, 0, 0, 0.3);
-            border-bottom: 2px solid var(--primary-color);
+            background: rgba(0, 0, 0, 0.7);
+            border-bottom: 1px solid var(--primary-color);
             padding: 2rem 0;
             margin-bottom: 2rem;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.1);
         }
 
         .prompt-card {
             background: var(--card-bg);
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            margin: 1rem 0;
-            transition: transform 0.2s;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            margin: 0.5rem 0;
+            position: relative;
+            transition: all 0.3s ease;
         }
 
         .prompt-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 15px rgba(42, 157, 143, 0.3);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
         }
 
         .prompt-content {
@@ -50,43 +53,53 @@
             position: absolute;
             right: 1rem;
             top: 1rem;
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--primary-color);
             color: var(--primary-color);
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
+            padding: 0.25rem 0.75rem;
+            border-radius: 3px;
             cursor: pointer;
             transition: all 0.3s ease;
         }
 
         .copy-btn:hover {
             background: var(--primary-color);
-            color: white;
+            color: var(--background-color);
         }
 
-        .category-tabs {
-            margin-bottom: 2rem;
-            border-bottom: 2px solid var(--primary-color);
+        .nav-tabs {
+            border-bottom: 1px solid var(--border-color);
         }
 
         .nav-link {
             color: var(--text-color);
-            border-radius: 0;
             border: none;
+            position: relative;
+            margin-right: 1rem;
         }
 
         .nav-link.active {
-            background: var(--primary-color) !important;
-            color: white !important;
-            border-bottom: 2px solid white;
+            background: transparent !important;
+            color: var(--primary-color) !important;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .nav-link:hover {
+            color: var(--primary-color);
         }
 
         .search-box {
             background: var(--card-bg);
-            border: 1px solid var(--primary-color);
+            border: 1px solid var(--border-color);
             color: var(--text-color);
-            padding: 1rem;
-            margin-bottom: 2rem;
+            padding: 0.5rem 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 4px;
+        }
+
+        .search-box:focus {
+            border-color: var(--primary-color);
+            box-shadow: none;
         }
 
         .toast {
@@ -94,10 +107,24 @@
             bottom: 20px;
             right: 20px;
             background: var(--primary-color);
-            color: white;
-            padding: 1rem 2rem;
+            color: var(--background-color);
+            padding: 0.75rem 1.5rem;
             border-radius: 4px;
+            font-weight: bold;
             display: none;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        code {
+            color: var(--primary-color);
+            background: rgba(0, 255, 0, 0.05);
+            padding: 2px 4px;
+            border-radius: 2px;
         }
     </style>
 </head>
@@ -105,24 +132,22 @@
     <div class="header text-center">
         <div class="container">
             <h1 class="mb-3"><i class="fas fa-terminal"></i> Nuclei AI Prompts</h1>
-            <p class="lead">Community-curated collection of AI-powered recon commands by @sudosuraj</p>
+            <p class="text-muted">Collection of AI-powered recon commands by @sudosuraj</p>
             <div class="search-box">
-                <input type="text" id="searchInput" class="form-control bg-dark text-light" 
+                <input type="text" id="searchInput" class="form-control bg-transparent text-light border-0" 
                        placeholder="Search commands...">
             </div>
         </div>
     </div>
 
     <div class="container">
-        <nav class="category-tabs">
-            <div class="nav nav-tabs" id="nav-tab"></div>
-        </nav>
-
+        <ul class="nav nav-tabs mb-4" id="categoryTabs"></ul>
         <div id="commandsContainer"></div>
     </div>
 
     <div class="toast" id="copyToast">Command copied!</div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         const README_URL = 'https://raw.githubusercontent.com/sudosuraj/nuclei-ai-prompts/main/README.md';
 
@@ -201,26 +226,28 @@
             toast.style.display = 'block';
             setTimeout(() => {
                 toast.style.display = 'none';
-            }, 2000);
+            }, 1500);
         }
 
-        async function renderUI() {
-            const categories = await fetchAndParseREADME();
-            const navTabs = document.getElementById('nav-tab');
-            const commandsContainer = document.getElementById('commandsContainer');
+        function initializeTabs(categories) {
+            const tabContainer = document.getElementById('categoryTabs');
+            const contentContainer = document.getElementById('commandsContainer');
 
-            // Create category tabs
+            // Create tabs
             categories.forEach((category, index) => {
-                const tab = document.createElement('button');
-                tab.className = `nav-link ${index === 0 ? 'active' : ''}`;
-                tab.textContent = category.name;
-                tab.dataset.bsToggle = 'tab';
-                tab.dataset.bsTarget = `#${category.name.replace(/\s+/g, '-')}`;
-                navTabs.appendChild(tab);
-            });
+                const listItem = document.createElement('li');
+                listItem.className = 'nav-item';
+                
+                const tabLink = document.createElement('a');
+                tabLink.className = `nav-link ${index === 0 ? 'active' : ''}`;
+                tabLink.href = `#${category.name.replace(/\s+/g, '-')}`;
+                tabLink.dataset.bsToggle = 'tab';
+                tabLink.textContent = category.name;
+                
+                listItem.appendChild(tabLink);
+                tabContainer.appendChild(listItem);
 
-            // Create category content
-            categories.forEach((category, index) => {
+                // Create tab content
                 const tabPane = document.createElement('div');
                 tabPane.className = `tab-pane fade ${index === 0 ? 'show active' : ''}`;
                 tabPane.id = category.name.replace(/\s+/g, '-');
@@ -229,20 +256,43 @@
                     tabPane.appendChild(createCommandCard(prompt));
                 });
 
-                commandsContainer.appendChild(tabPane);
+                contentContainer.appendChild(tabPane);
             });
 
-            // Add search functionality
+            // Initialize Bootstrap tabs
+            new bootstrap.Tab(document.querySelector('#categoryTabs .nav-link'));
+        }
+
+        function initializeSearch() {
             document.getElementById('searchInput').addEventListener('input', (e) => {
                 const searchTerm = e.target.value.toLowerCase();
-                document.querySelectorAll('.prompt-card').forEach(card => {
-                    const text = card.textContent.toLowerCase();
-                    card.style.display = text.includes(searchTerm) ? 'block' : 'none';
+                document.querySelectorAll('.tab-pane').forEach(pane => {
+                    let hasVisibleItems = false;
+                    pane.querySelectorAll('.prompt-card').forEach(card => {
+                        const text = card.textContent.toLowerCase();
+                        if (text.includes(searchTerm)) {
+                            card.style.display = 'block';
+                            hasVisibleItems = true;
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                    // Show/hide tabs based on results
+                    const tabLink = document.querySelector(`a[href="#${pane.id}"]`);
+                    if (tabLink) {
+                        tabLink.parentElement.style.display = hasVisibleItems ? 'block' : 'none';
+                    }
                 });
             });
         }
 
-        renderUI();
+        async function initializeApp() {
+            const categories = await fetchAndParseREADME();
+            initializeTabs(categories);
+            initializeSearch();
+        }
+
+        initializeApp();
     </script>
 </body>
 </html>
