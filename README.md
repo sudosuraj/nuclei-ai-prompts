@@ -62,24 +62,24 @@ nuclei -list targets.txt -ai "Find exposed server status pages (e.g., phpinfo, s
 nuclei -list targets.txt -ai "Identify sensitive configuration files (.env, .config, application.properties, settings.py)"
 nuclei -list targets.txt -ai "Scan for information leaks in HTTP responses and headers"
 ```
-## Sensitive Data Exposure (Javascript Files)
+## Sensitive Data Exposure Javascript Files
 ```
-docker run -v $(pwd):/src projectdiscovery/nuclei:latest -l /src/js_links -ai "Analyze JavaScript code for security vulnerabilities (XSS, CSRF, CORS misconfigurations, Clickjacking)"
-docker run -v $(pwd):/src projectdiscovery/nuclei:latest -l /src/js_links -ai "Perform a full deep JavaScript security audit: API keys, secrets, internal endpoints, debug logs, authentication tokens, and misconfigurations"  
-docker run -v $(pwd):/src projectdiscovery/nuclei:latest -l /src/js_links -ai "Find hardcoded API keys, JWT tokens, OAuth credentials, and authentication secrets in JavaScript"  
-docker run -v $(pwd):/src projectdiscovery/nuclei:latest -l /src/js_links -ai "Identify hardcoded cloud service credentials (AWS, GCP, Azure) in JavaScript files"  
-docker run -v $(pwd):/src projectdiscovery/nuclei:latest -l /src/js_links -ai "Find internal API endpoints (REST, GraphQL, WebSockets) hidden in JavaScript files"  
-docker run -v $(pwd):/src projectdiscovery/nuclei:latest -l /src/js_links -ai "Detect API keys, JWT tokens, and passwords in JavaScript files"
-docker run -v $(pwd):/src projectdiscovery/nuclei:latest -l /src/js_links -ai "Find AWS, Google Cloud, and Azure API keys exposed in JavaScript"  
-docker run -v $(pwd):/src projectdiscovery/nuclei:latest -l /src/js_links -ai "Detect OAuth, Facebook, Twitter, and Google API tokens in JavaScript files"  
-docker run -v $(pwd):/src projectdiscovery/nuclei:latest -l /src/js_links -ai "Find Firebase, MongoDB, and Elasticsearch credentials in JavaScript"  
-docker run -v $(pwd):/src projectdiscovery/nuclei:latest -l /src/js_links -ai "Detect hardcoded JWT tokens and secrets in JavaScript files"  
-docker run -v $(pwd):/src projectdiscovery/nuclei:latest -l /src/js_links -ai "Identify exposed payment API keys for Stripe, PayPal, and Square in JavaScript files"  
-docker run -v $(pwd):/src projectdiscovery/nuclei:latest -l /src/js_links -ai "Find debugging logs, internal API endpoints, and test credentials in JavaScript"  
-docker run -v $(pwd):/src projectdiscovery/nuclei:latest -l /src/js_links -ai "Detect corporate email addresses, internal contacts and internal resource in JavaScript files"
-docker run -v $(pwd):/src projectdiscovery/nuclei:latest -l /src/js_links -ai "Find exposed JavaScript source maps (.map files) revealing original source code"
+nuclei -l /src/js_links -ai "Analyze JavaScript code for security vulnerabilities (XSS, CSRF, CORS misconfigurations, Clickjacking)"
+nuclei -l /src/js_links -ai "Perform a full deep JavaScript security audit: API keys, secrets, internal endpoints, debug logs, authentication tokens, and misconfigurations"  
+nuclei -l /src/js_links -ai "Find hardcoded API keys, JWT tokens, OAuth credentials, and authentication secrets in JavaScript"  
+nuclei -l /src/js_links -ai "Identify hardcoded cloud service credentials (AWS, GCP, Azure) in JavaScript files"  
+nuclei -l /src/js_links -ai "Find internal API endpoints (REST, GraphQL, WebSockets) hidden in JavaScript files"  
+nuclei -l /src/js_links -ai "Detect API keys, JWT tokens, and passwords in JavaScript files"
+nuclei -l /src/js_links -ai "Find AWS, Google Cloud, and Azure API keys exposed in JavaScript"  
+nuclei -l /src/js_links -ai "Detect OAuth, Facebook, Twitter, and Google API tokens in JavaScript files"  
+nuclei -l /src/js_links -ai "Find Firebase, MongoDB, and Elasticsearch credentials in JavaScript"  
+nuclei -l /src/js_links -ai "Detect hardcoded JWT tokens and secrets in JavaScript files"  
+nuclei -l /src/js_links -ai "Identify exposed payment API keys for Stripe, PayPal, and Square in JavaScript files"  
+nuclei -l /src/js_links -ai "Find debugging logs, internal API endpoints, and test credentials in JavaScript"  
+nuclei -l /src/js_links -ai "Detect corporate email addresses, internal contacts and internal resource in JavaScript files"
+nuclei -l /src/js_links -ai "Find exposed JavaScript source maps (.map files) revealing original source code"
 ```
-## SQL Injection (SQLi)
+## SQL Injection
 ```
 nuclei -list katana.jsonl -im jsonl -ai "Perform fuzzing on all parameters and HTTP methods using DSL, focusing on detecting SQL Injection vulnerabilities with pre-conditions."
 nuclei -list katana.jsonl -im jsonl -ai "Detect SQL error messages indicating SQL injection vulnerabilities"
@@ -90,7 +90,7 @@ nuclei -list katana.jsonl -im jsonl -ai "Scan for time based SQL injection in al
 nuclei -list katana.jsonl -im jsonl -ai "Identify SQL injection in API endpoints using JSON payloads"  
 nuclei -list katana.jsonl -im jsonl -ai "Check for SQL injection via HTTP headers (User-Agent, Referer, X-Forwarded-For, X-Forwarded-Host)" 
 ```
-## Cross-Site Scripting (XSS)
+## XSS
 ```
 nuclei -list katana.jsonl -im jsonl -ai "Perform fuzzing on all parameters and HTTP methods using DSL, focusing on detecting XSS vulnerabilities (Reflected, Stored, and DOM-based) with pre-conditions."
 nuclei -list katana.jsonl -im jsonl -ai "Find reflected XSS in 'q', 'search', 's', 'redirect', 'next', 'return', 'url' parameters"
@@ -101,7 +101,7 @@ nuclei -list katana.jsonl -im jsonl -ai "Scan for XSS vulnerabilities in AJAX en
 nuclei -list katana.jsonl -im jsonl -ai "Check for JSON-based XSS via API responses"
 nuclei -list katana.jsonl -im jsonl -ai "Identify reflected cross-site scripting (XSS) vulnerabilities"
 ```
-## Server-Side Request Forgery (SSRF)
+## SSRF
 ```
 nuclei -list katana.jsonl -im jsonl -ai "Perform fuzzing on all parameters and HTTP methods using DSL, focusing on detecting SSRF vulnerabilities with pre-conditions."
 nuclei -list katana.jsonl -im jsonl -ai "Find SSRF vulnerabilities in web applications"
@@ -112,7 +112,7 @@ nuclei -list katana.jsonl -im jsonl -ai "Detect SSRF by injecting internal IP ra
 nuclei -list katana.jsonl -im jsonl -ai "Identify SSRF in API requests that fetch external resources"
 nuclei -list katana.jsonl -im jsonl -ai "Scan for blind SSRF by injecting webhooks and external DNS resolver payloads"
 ```
-## Local & Remote File Inclusion (LFI/RFI)
+## Local & Remote File Inclusion
 ```
 nuclei -list katana.jsonl -im jsonl -ai "Perform fuzzing on all parameters and HTTP methods using DSL, focusing on detecting LFI/RFI vulnerabilities with pre-conditions."
 nuclei -list katana.jsonl -im jsonl -ai "Find LFI in 'file', 'path', 'template', 'inc', 'lang', 'page' parameters"
@@ -120,7 +120,7 @@ nuclei -list katana.jsonl -im jsonl -ai "Detect RFI by injecting external URLs i
 nuclei -list katana.jsonl -im jsonl -ai "Identify LFI using common payloads (/etc/passwd, ../../etc/passwd, php://filter, php://input)"
 nuclei -list katana.jsonl -im jsonl -ai "Check for LFI in error messages exposing full file paths"
 ```
-## Command Injection (RCE)
+## RCE
 ```
 nuclei -list katana.jsonl -im jsonl -ai "Perform fuzzing on all parameters and HTTP methods using DSL, focusing on detecting Remote Code Execution (Command Injection) vulnerabilities with pre-conditions."
 nuclei -list katana.jsonl -im jsonl -ai "Perform fuzzing on all parameters and HTTP methods using DSL, focusing on detecting Remote Code Execution (RCE) vulnerabilities on Linux and Windows."
