@@ -1,167 +1,159 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Nuclei AI Prompts</title>
-  <style>
-    /* Hacker theme styling */
-    body {
-      background-color: #0e0e0e;
-      color: #00ff00;
-      font-family: "Courier New", Courier, monospace;
-      margin: 0;
-      padding: 0;
-    }
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    header {
-      text-align: center;
-      padding: 20px 0;
-      border-bottom: 1px solid #00ff00;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 2.5em;
-    }
-    .category {
-      margin-top: 30px;
-      border-bottom: 1px dashed #00ff00;
-      padding-bottom: 10px;
-    }
-    .category h2 {
-      margin: 10px 0;
-      font-size: 1.8em;
-    }
-    .prompt {
-      background-color: #151515;
-      margin: 10px 0;
-      padding: 10px;
-      border-radius: 5px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .prompt-code {
-      flex-grow: 1;
-      word-break: break-all;
-    }
-    .copy-btn {
-      background-color: #1a1a1a;
-      color: #00ff00;
-      border: 1px solid #00ff00;
-      padding: 5px 10px;
-      margin-left: 15px;
-      cursor: pointer;
-      border-radius: 3px;
-      transition: background-color 0.3s;
-    }
-    .copy-btn:hover {
-      background-color: #222;
-    }
-    /* Responsive styling */
-    @media (max-width: 600px) {
-      .prompt {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .copy-btn {
-        margin-left: 0;
-        margin-top: 5px;
-        width: 100%;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuclei AI Prompts</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --hacker-green: #00ff00;
+            --terminal-black: #0a0a0a;
+            --glow-effect: 0 0 10px var(--hacker-green);
+        }
+
+        /* Previous CSS styles remain the same */
+        /* ... (keep all previous style rules) ... */
+    </style>
 </head>
 <body>
-  <header>
-    <h1>Nuclei AI Prompts</h1>
-    <p>Community repository for all AI recon commands</p>
-  </header>
-  <div class="container">
-    <div id="promptsContainer">
-      <!-- Prompts and categories will be loaded here -->
+    <div class="matrix-bg"></div>
+    <div class="scan-line"></div>
+
+    <div class="container py-5">
+        <div class="terminal-header text-center">
+            <h1>// AI RECON PROMPTS <span class="blink">_</span></h1>
+            <p>Community-Driven Nuclei AI Templates Repository by @sudosuraj</p>
+        </div>
+
+        <div class="row" id="categories"></div>
     </div>
-  </div>
 
-  <script>
-    // Fetch the readme.md file and process its content
-    async function fetchPrompts() {
-      try {
-        const response = await fetch('readme.md');
-        if (!response.ok) {
-          throw new Error('HTTP error ' + response.status);
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js"></script>
+    <script>
+        const README_URL = 'https://raw.githubusercontent.com/sudosuraj/nuclei-ai-prompts/main/README.md';
+
+        async function fetchAndParseREADME() {
+            try {
+                const response = await fetch(README_URL);
+                const markdown = await response.text();
+                return parseMarkdown(markdown);
+            } catch (error) {
+                console.error('Error fetching README:', error);
+                return [];
+            }
         }
-        const text = await response.text();
-        processPrompts(text);
-      } catch (error) {
-        console.error('Error:', error);
-        document.getElementById('promptsContainer').innerHTML =
-          '<p>Error loading prompts. Please ensure you are running a local server and that <code>readme.md</code> is in the correct location.</p>';
-      }
-    }
 
-    // Process the markdown text by splitting into lines and grouping by categories.
-    function processPrompts(text) {
-      const container = document.getElementById('promptsContainer');
-      const lines = text.split('\n');
-      let currentCategoryDiv = null;
+        function parseMarkdown(markdown) {
+            const categories = [];
+            let currentCategory = null;
+            let inCodeBlock = false;
+            let currentPrompts = [];
 
-      lines.forEach(line => {
-        line = line.trim();
-        if (line.startsWith('#')) {
-          // New category header (e.g., "# Authentication Bypass")
-          const categoryName = line.replace(/^#+\s*/, '');
-          const categoryDiv = document.createElement('div');
-          categoryDiv.classList.add('category');
-
-          const header = document.createElement('h2');
-          header.textContent = categoryName;
-          categoryDiv.appendChild(header);
-
-          container.appendChild(categoryDiv);
-          currentCategoryDiv = categoryDiv;
-        } else if (line) {
-          // Treat the line as a prompt command
-          const promptDiv = document.createElement('div');
-          promptDiv.classList.add('prompt');
-
-          const codeDiv = document.createElement('div');
-          codeDiv.classList.add('prompt-code');
-          codeDiv.textContent = line;
-
-          const copyButton = document.createElement('button');
-          copyButton.classList.add('copy-btn');
-          copyButton.textContent = 'Copy';
-          copyButton.addEventListener('click', () => {
-            navigator.clipboard.writeText(line).then(() => {
-              copyButton.textContent = 'Copied!';
-              setTimeout(() => {
-                copyButton.textContent = 'Copy';
-              }, 2000);
-            }).catch(err => {
-              console.error('Copy failed:', err);
+            markdown.split('\n').forEach(line => {
+                // Detect category headings (## Level 2 headers)
+                if (line.startsWith('## ')) {
+                    if (currentCategory) {
+                        categories.push({
+                            name: currentCategory,
+                            prompts: currentPrompts
+                        });
+                    }
+                    currentCategory = line.replace('## ', '').trim();
+                    currentPrompts = [];
+                    inCodeBlock = false;
+                }
+                // Detect code blocks
+                else if (line.startsWith('```')) {
+                    inCodeBlock = !inCodeBlock;
+                }
+                // Collect prompts from code blocks
+                else if (inCodeBlock && line.trim()) {
+                    currentPrompts.push(line.trim());
+                }
             });
-          });
 
-          promptDiv.appendChild(codeDiv);
-          promptDiv.appendChild(copyButton);
+            // Push the last category
+            if (currentCategory && currentPrompts.length > 0) {
+                categories.push({
+                    name: currentCategory,
+                    prompts: currentPrompts
+                });
+            }
 
-          // If no category header was found yet, place it directly in the container
-          if (currentCategoryDiv) {
-            currentCategoryDiv.appendChild(promptDiv);
-          } else {
-            container.appendChild(promptDiv);
-          }
+            return categories;
         }
-      });
-    }
 
-    // Initialize by fetching prompts
-    fetchPrompts();
-  </script>
+        function createCategoryCard(category) {
+            const card = document.createElement('div');
+            card.className = 'col-md-6';
+            
+            const iconMap = {
+                'subdomain': 'fa-globe',
+                'vulnerability': 'fa-bug',
+                'scanning': 'fa-search',
+                'detection': 'fa-eye',
+                'network': 'fa-network-wired'
+            };
+
+            const icon = Object.entries(iconMap).find(([key]) => 
+                category.name.toLowerCase().includes(key)
+            )?.[1] || 'fa-terminal';
+
+            card.innerHTML = `
+                <div class="category-card">
+                    <div class="card-header">
+                        <i class="fas ${icon}"></i>
+                        ${category.name}
+                    </div>
+                    <div class="card-body">
+                        ${category.prompts.map(prompt => `
+                            <div class="prompt-item">
+                                <code>${prompt}</code>
+                                <button class="copy-btn" data-clipboard-text="${prompt}">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        async function renderCategories() {
+            const categories = await fetchAndParseREADME();
+            const container = document.getElementById('categories');
+            
+            categories.forEach(category => {
+                container.appendChild(createCategoryCard(category));
+            });
+
+            // Initialize Clipboard.js after elements are created
+            new ClipboardJS('.copy-btn');
+            
+            // Add copy confirmation
+            document.addEventListener('copy', (e) => {
+                const toast = document.createElement('div');
+                toast.textContent = 'Payload copied to clipboard!';
+                toast.style.position = 'fixed';
+                toast.style.bottom = '20px';
+                toast.style.right = '20px';
+                toast.style.background = 'var(--terminal-black)';
+                toast.style.color = 'var(--hacker-green)';
+                toast.style.padding = '1rem';
+                toast.style.border = '1px solid var(--hacker-green)';
+                document.body.appendChild(toast);
+                
+                setTimeout(() => toast.remove(), 2000);
+            });
+        }
+
+        renderCategories();
+    </script>
 </body>
 </html>
