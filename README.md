@@ -1,86 +1,174 @@
-## Authentication Bypass
-Check for Weak OAuth Implementations: Identify improperly configured OAuth authentication mechanisms.
-Detect Authentication Bypass via JWT Manipulation: Scan for JWT vulnerabilities where authentication can be bypassed.
-Weak API Key Exposure: Detect weak or publicly exposed API keys leading to authentication bypass.
-JWT Token Tampering Detection: Identify authentication bypass vulnerabilities due to weak JWT token implementations.
-Weak Login Bypass: Identify login pages vulnerable to authentication bypass.
+## Fast Info Gathering
+```
+nuclei -list targets.txt -ai "Extract page title, detech tech and versions"
+nuclei -list targets.txt -ai "Extract email addresses from web pages"
+nuclei -list targets.txt -ai "Extract all subdomains referenced in web pages"
+```
+## Low Hanging Fruits
+```
+nuclei -list targets.txt -ai "Find sensitive information in HTML comments (debug notes, API keys, credentials)"
+nuclei -list targets.txt -ai "Find exposed .env files leaking credentials, API keys, and database passwords"
+nuclei -list targets.txt -ai "Find exposed configuration files such as config.json, config.yaml, config.php, application.properties containing API keys and database credentials."
+nuclei -list targets.txt -ai "Find exposed configuration files containing sensitive information such as credentials, API keys, database passwords, and cloud service secrets."  
+nuclei -list targets.txt -ai "Find database configuration files such as database.yml, db_config.php, .pgpass, .my.cnf leaking credentials."  
+nuclei -list targets.txt -ai "Find exposed Docker and Kubernetes configuration files such as docker-compose.yml, kubeconfig, .dockercfg, .docker/config.json containing cloud credentials and secrets."  
+nuclei -list targets.txt -ai "Find exposed SSH keys and configuration files such as id_rsa, authorized_keys, and ssh_config."  
+nuclei -list targets.txt -ai "Find exposed WordPress configuration files (wp-config.php) containing database credentials and authentication secrets."  
+nuclei -list targets.txt -ai "Identify exposed .npmrc and .yarnrc files leaking NPM authentication tokens"
+nuclei -list targets.txt -ai "Identify open directory listings exposing sensitive files"  
+nuclei -list targets.txt -ai "Find exposed .git directories allowing full repo download"
+nuclei -list targets.txt -ai "Find exposed .svn and .hg repositories leaking source code"  
+nuclei -list targets.txt -ai "Identify open FTP servers allowing anonymous access"  
+nuclei -list targets.txt -ai "Find GraphQL endpoints with introspection enabled"  
+nuclei -list targets.txt -ai "Identify exposed .well-known directories revealing sensitive data"  
+nuclei -list targets.txt -ai "Find publicly accessible phpinfo() pages leaking environment details"  
+nuclei -list targets.txt -ai "Find exposed Swagger, Redocly, GraphiQL, and API Blueprint documentation"  
+nuclei -list targets.txt -ai "Identify exposed .vscode and .idea directories leaking developer configs"  
+nuclei -list targets.txt -ai "Detect internal IP addresses (10.x.x.x, 192.168.x.x, etc.) in HTTP responses"  
+nuclei -list targets.txt -ai "Find exposed WordPress debug.log files leaking credentials and error messages"  
+nuclei -list targets.txt -ai "Detect misconfigured CORS allowing wildcard origins ('*')"  
+nuclei -list targets.txt -ai "Find publicly accessible backup and log files (.log, .bak, .sql, .zip, .dump)"  
+nuclei -list targets.txt -ai "Find exposed admin panels with default credentials"
+nuclei -list targets.txt -ai "Identify commonly used API endpoints that expose sensitive user data, returning HTTP status 200 OK."
+nuclei -list targets.txt -ai "Detect web applications running in debug mode, potentially exposing sensitive system information."  
+```
 
-## Broken Access Control
-Privilege Escalation via Direct URL Access: Identify cases where unauthorized users can access privileged resources by modifying URLs.
-Detect Forced Browsing Exploits: Scan for access control vulnerabilities that allow unauthorized access.
-Broken Access Control Detection: Detect improper user authorization and privilege escalation vulnerabilities.
+## Advanced Mixed Testing
+```
+nuclei -list targets.txt -ai "Detect debug endpoints revealing system information"  
+nuclei -list targets.txt -ai "Identify test and staging environments exposed to the internet"  
+nuclei -list targets.txt -ai "Find admin login endpoints, filter 404 response code"
+nuclei -list targets.txt -ai "Find misconfigured CORS policies allowing wildcard origins"
+nuclei -list targets.txt -ai "Detect exposed stack traces in error messages"
+nuclei -list targets.txt -ai "Identify default credentials on login pages"
+nuclei -list targets.txt -ai "Find misconfigured Apache/Nginx security headers"  
+nuclei -list targets.txt -ai "Check for APIs allowing unauthenticated access to admin routes"  
+nuclei -list targets.txt -ai "Identify exposed admin panels of popular CMS (WordPress, Joomla, etc.)"
+```
+## Sensitive Data Exposure
+```
+nuclei -list targets.txt -ai "Scan for exposed environment files (.env) containing credentials"
+nuclei -list targets.txt -ai "Find open directory listings and publicly accessible files"
+nuclei -list targets.txt -ai "Detect exposed .git repositories and sensitive files"
+nuclei -list targets.txt -ai "Identify publicly accessible backup and log files (.log, .bak, .sql, .dump)"
+nuclei -list targets.txt -ai "Detect exposed .htaccess and .htpasswd files"
+nuclei -list targets.txt -ai "Check for SSH private keys leaked in web directories"
+nuclei -list targets.txt -ai "Find exposed API keys and secrets in responses and URLs"
+nuclei -list targets.txt -ai "Identify API endpoints leaking sensitive data"
+nuclei -list targets.txt -ai "Find leaked database credentials in JavaScript files"
+nuclei -list targets.txt -ai "Scan for hardcoded credentials in source code comments"
+nuclei -list targets.txt -ai "Identify sensitive endpoints leaking personal or internal data"
+nuclei -list targets.txt -ai "Detect vulnerable API endpoints exposing user input or sensitive information"
+nuclei -list targets.txt -ai "Find exposed server status pages (e.g., phpinfo, server-status)"
+nuclei -list targets.txt -ai "Identify sensitive configuration files (.env, .config, application.properties, settings.py)"
+nuclei -list targets.txt -ai "Scan for information leaks in HTTP responses and headers"
+```
+## Sensitive Data Exposure (Javascript Files)
+```
+docker run -v $(pwd):/src projectdiscovery/nuclei:latest -l /src/js_links -ai "Analyze JavaScript code for security vulnerabilities (XSS, CSRF, CORS misconfigurations, Clickjacking)"
+docker run -v $(pwd):/src projectdiscovery/nuclei:latest -l /src/js_links -ai "Perform a full deep JavaScript security audit: API keys, secrets, internal endpoints, debug logs, authentication tokens, and misconfigurations"  
+docker run -v $(pwd):/src projectdiscovery/nuclei:latest -l /src/js_links -ai "Find hardcoded API keys, JWT tokens, OAuth credentials, and authentication secrets in JavaScript"  
+docker run -v $(pwd):/src projectdiscovery/nuclei:latest -l /src/js_links -ai "Identify hardcoded cloud service credentials (AWS, GCP, Azure) in JavaScript files"  
+docker run -v $(pwd):/src projectdiscovery/nuclei:latest -l /src/js_links -ai "Find internal API endpoints (REST, GraphQL, WebSockets) hidden in JavaScript files"  
+docker run -v $(pwd):/src projectdiscovery/nuclei:latest -l /src/js_links -ai "Detect API keys, JWT tokens, and passwords in JavaScript files"
+docker run -v $(pwd):/src projectdiscovery/nuclei:latest -l /src/js_links -ai "Find AWS, Google Cloud, and Azure API keys exposed in JavaScript"  
+docker run -v $(pwd):/src projectdiscovery/nuclei:latest -l /src/js_links -ai "Detect OAuth, Facebook, Twitter, and Google API tokens in JavaScript files"  
+docker run -v $(pwd):/src projectdiscovery/nuclei:latest -l /src/js_links -ai "Find Firebase, MongoDB, and Elasticsearch credentials in JavaScript"  
+docker run -v $(pwd):/src projectdiscovery/nuclei:latest -l /src/js_links -ai "Detect hardcoded JWT tokens and secrets in JavaScript files"  
+docker run -v $(pwd):/src projectdiscovery/nuclei:latest -l /src/js_links -ai "Identify exposed payment API keys for Stripe, PayPal, and Square in JavaScript files"  
+docker run -v $(pwd):/src projectdiscovery/nuclei:latest -l /src/js_links -ai "Find debugging logs, internal API endpoints, and test credentials in JavaScript"  
+docker run -v $(pwd):/src projectdiscovery/nuclei:latest -l /src/js_links -ai "Detect corporate email addresses, internal contacts and internal resource in JavaScript files"
+docker run -v $(pwd):/src projectdiscovery/nuclei:latest -l /src/js_links -ai "Find exposed JavaScript source maps (.map files) revealing original source code"
+```
 
-## Command Injection
-Command Injection Scan: Identify user input fields allowing shell command execution.
-
-## Directory Traversal
-Detect PHP File Inclusion via Traversal: Check for traversal vulnerabilities allowing PHP file inclusion.
-Detect Windows Path Traversal: Identify directory traversal vulnerabilities using Windows-style file paths.
-Absolute Path Traversal: Find vulnerabilities where absolute file paths can be exploited for unauthorized access.
-Detect ../ Directory Traversal: Identify directory traversal vulnerabilities allowing access to sensitive files.
-Directory Traversal Exploit: Detect sensitive files exposed via traversal attacks.
-
-## File Inclusion (LFI/RFI)
-File Inclusion Scan: Detect local and remote file inclusion vulnerabilities.
-
-## Hardcoded Credentials
-Check for Hardcoded Credentials in Code: Identify hardcoded credentials in source code.
-Detect Exposed API Keys: Identify API keys hardcoded in configuration files.
-Scan for Hardcoded Passwords: Find password strings embedded in application code.
-Detect Hardcoded Database Credentials: Identify database credentials stored insecurely.
-Identify Hardcoded Secrets: Scan for secrets in source code.
-Hardcoded Credential Detection: Identify potential hardcoded credentials vulnerabilities.
-Static Credential Exposure Scan: Scan for static credentials in application binaries.
-
-## HTTP Request Smuggling
-HTTP Request Smuggling Detection: Identify vulnerabilities in HTTP request processing that can lead to request smuggling.
-
-## Insecure Direct Object References (IDOR)
-Find IDOR Issues: Detect insecure direct object references exposing unauthorized data.
-
-## JWT Token Vulnerabilities
-JWT Token Analysis: Check for weak JWT implementations and misconfigurations.
-
-## Race Condition
-Detect Race Condition Issues: Identify vulnerabilities where multiple parallel processes can manipulate shared resources.
-
-# Remote Code Execution (RCE)
-RCE Detection via File Upload Exploitation: Scan for insecure file upload mechanisms that allow RCE.
-Detect RCE via Unsafe Function Calls: Identify unsafe function calls that may lead to remote command execution.
-RCE via File Upload: Detect RCE vulnerabilities through insecure file upload mechanisms.
-Command Injection Detection for RCE: Identify potential command injection vulnerabilities in input fields leading to RCE.
-Basic RCE Detection: Find potential remote command execution in input fields.
-
-## Security Misconfiguration
-Detect Security Misconfigurations: Identify vulnerabilities resulting from insecure default configurations.
-Scan for Unsecured Admin Interfaces: Identify unsecured admin pages or interfaces.
-Identify Exposed Configuration Files: Detect configuration files exposed to the public.
-Detect Misconfigured HTTP Headers: Identify improper HTTP header configurations.
-Security Settings Audit: Evaluate security settings and detect misconfigurations.
-
+## SQL Injection (SQLi)
+```
+nuclei -list katana.jsonl -im jsonl -ai "Perform fuzzing on all parameters and HTTP methods using DSL, focusing on detecting SQL Injection vulnerabilities with pre-conditions."
+nuclei -list katana.jsonl -im jsonl -ai "Detect SQL error messages indicating SQL injection vulnerabilities"
+nuclei -list katana.jsonl -im jsonl -ai "Detect SQL errors in response when injecting common payloads into GET and POST requests"  
+nuclei -list katana.jsonl -im jsonl -ai "Find SQL injection in 'id', 'user', 'product', 'category', 'page' parameters"  
+nuclei -list katana.jsonl -im jsonl -ai "Scan for blind SQL injection in 's', 'search', 'query', 'sort', 'filter' GET/POST parameters"
+nuclei -list katana.jsonl -im jsonl -ai "Scan for time based SQL injection in all parameters" 
+nuclei -list katana.jsonl -im jsonl -ai "Identify SQL injection in API endpoints using JSON payloads"  
+nuclei -list katana.jsonl -im jsonl -ai "Check for SQL injection via HTTP headers (User-Agent, Referer, X-Forwarded-For, X-Forwarded-Host)" 
+```
+## Cross-Site Scripting (XSS)
+```
+nuclei -list katana.jsonl -im jsonl -ai "Perform fuzzing on all parameters and HTTP methods using DSL, focusing on detecting XSS vulnerabilities (Reflected, Stored, and DOM-based) with pre-conditions."
+nuclei -list katana.jsonl -im jsonl -ai "Find reflected XSS in 'q', 'search', 's', 'redirect', 'next', 'return', 'url' parameters"
+nuclei -list katana.jsonl -im jsonl -ai "Find stored XSS in all parameters"
+nuclei -list katana.jsonl -im jsonl -ai "Identify stored XSS in comment fields, usernames, profile descriptions"  
+nuclei -list katana.jsonl -im jsonl -ai "Detect DOM-based XSS in JavaScript variables using common sources like location.href"  
+nuclei -list katana.jsonl -im jsonl -ai "Scan for XSS vulnerabilities in AJAX endpoints"  
+nuclei -list katana.jsonl -im jsonl -ai "Check for JSON-based XSS via API responses"
+nuclei -list katana.jsonl -im jsonl -ai "Identify reflected cross-site scripting (XSS) vulnerabilities"
+```
 ## Server-Side Request Forgery (SSRF)
-Detect SSRF Vulnerabilities: Identify server-side request forgery vulnerabilities in web applications.
-Scan for Internal Network Access via SSRF: Identify SSRF vulnerabilities that expose internal networks.
-Identify SSRF via Redirects: Detect SSRF vulnerabilities using URL redirects.
-Check SSRF in Image Fetchers: Identify SSRF vulnerabilities in services that fetch images.
-Analyze SSRF Attack Surfaces: Evaluate potential SSRF attack vectors.
-
-## SQL Injection
-Detect SQL Injection Vulnerabilities: Identify potential SQL injection points in web applications.
-Scan for Blind SQL Injection: Identify blind SQL injection vulnerabilities.
-Detect Error-Based SQL Injection: Identify error-based SQL injection vulnerabilities.
-Identify Time-Based SQL Injection: Detect SQL injection using time delays.
-Parameterized Query Analysis: Ensure SQL queries use parameterized statements.
-Check for Union-Based SQL Injection: Identify union-based SQL injection vulnerabilities.
-Automated SQL Injection Scan: Use automated tools to detect SQL injection vulnerabilities.
-
-## XML External Entity (XXE)
-Detect XXE Vulnerabilities: Identify XML External Entity vulnerabilities in XML parsers.
-
-## XSS (Cross-Site Scripting)
-Detect Reflected XSS: Identify reflected cross-site scripting vulnerabilities.
-Scan for Stored XSS: Identify stored cross-site scripting vulnerabilities.
-Detect DOM-Based XSS: Identify DOM-based XSS vulnerabilities.
-Identify XSS via Script Injection: Detect XSS vulnerabilities through injected scripts.
-Check for AngularJS XSS: Identify XSS vulnerabilities in AngularJS applications.
-Automated XSS Scanner: Use automated scanning to detect XSS vulnerabilities.
+```
+nuclei -list katana.jsonl -im jsonl -ai "Perform fuzzing on all parameters and HTTP methods using DSL, focusing on detecting SSRF vulnerabilities with pre-conditions."
+nuclei -list katana.jsonl -im jsonl -ai "Find SSRF vulnerabilities in web applications"
+nuclei -list katana.jsonl -im jsonl -ai "Identify SSRF vulnerabilities in query parameters"
+nuclei -list katana.jsonl -im jsonl -ai "Identify SSRF vulnerabilities in most common parameters"
+nuclei -list katana.jsonl -im jsonl -ai "Find SSRF in 'url', 'link', 'redirect', 'next', 'feed', 'callback' parameters"
+nuclei -list katana.jsonl -im jsonl -ai "Detect SSRF by injecting internal IP ranges (127.0.0.1, 169.254.169.254)"
+nuclei -list katana.jsonl -im jsonl -ai "Identify SSRF in API requests that fetch external resources"
+nuclei -list katana.jsonl -im jsonl -ai "Scan for blind SSRF by injecting webhooks and external DNS resolver payloads"
+```
+## Local & Remote File Inclusion (LFI/RFI)
+```
+nuclei -list katana.jsonl -im jsonl -ai "Perform fuzzing on all parameters and HTTP methods using DSL, focusing on detecting LFI/RFI vulnerabilities with pre-conditions."
+nuclei -list katana.jsonl -im jsonl -ai "Find LFI in 'file', 'path', 'template', 'inc', 'lang', 'page' parameters"
+nuclei -list katana.jsonl -im jsonl -ai "Detect RFI by injecting external URLs into 'file' and 'load' parameters"
+nuclei -list katana.jsonl -im jsonl -ai "Identify LFI using common payloads (/etc/passwd, ../../etc/passwd, php://filter, php://input)"
+nuclei -list katana.jsonl -im jsonl -ai "Check for LFI in error messages exposing full file paths"
+```
+## Command Injection (RCE)
+```
+nuclei -list katana.jsonl -im jsonl -ai "Perform fuzzing on all parameters and HTTP methods using DSL, focusing on detecting Remote Code Execution (Command Injection) vulnerabilities with pre-conditions."
+nuclei -list katana.jsonl -im jsonl -ai "Perform fuzzing on all parameters and HTTP methods using DSL, focusing on detecting Remote Code Execution (RCE) vulnerabilities on Linux and Windows."
+nuclei -list katana.jsonl -im jsonl -ai "Detect command injection in 'cmd', 'exec', 'ping', 'query', 'shell' parameters"
+nuclei -list katana.jsonl -im jsonl -ai "Scan for OS command injection via HTTP headers (X-Forwarded-For, X-Forwarded-Host, User-Agent, Referer)"
+nuclei -list katana.jsonl -im jsonl -ai "Identify RCE vulnerabilities in file upload functionalities"
+```
+## XXE
+```
+nuclei -list katana.jsonl -im jsonl -ai "Perform fuzzing on all XML-based inputs using DSL, focusing on detecting XXE vulnerabilities with pre-conditions."  
+```
+## Host Header Injection
+```
+nuclei -l targets.txt -ai "Detect Host Header Injection" 
+```
+## Cloud Security Issues
+```
+nuclei -list targets.txt -ai "Detect open Docker API endpoints allowing remote access"
+nuclei -list targets.txt -ai "Detect exposed Kubernetes API servers allowing unauthenticated access"
+nuclei -list targets.txt -ai "Find open Kubernetes Dashboard instances with weak or no authentication"
+nuclei -list targets.txt -ai "Detect exposed Kubernetes dashboards and APIs"
+nuclei -list targets.txt -ai "Scan for cloud metadata endpoints accessible externally"
+nuclei -list targets.txt -ai "Detect AWS S3, GCP, Azure buckets in response, and scan this cloud storage buckets (AWS S3, GCP, Azure) for misconfigurations (read, write ACL, public access, etc)"
+nuclei -list targets.txt -ai "Detect Azure Storage Account keys exposed in responses, minimize false positive"
+nuclei -list targets.txt -ai "Detect AWS keys exposed in responses and write extractors, minimize false positive"
+nuclei -list targets.txt -ai "Detect GCP keys exposed in responses and write extractors, minimize false positive"
+```
+## Web Cache Poisoning
+```
+nuclei -list targets.txt -ai "Find web cache poisoning via 'Host", 'X-Forwarded-Host' and'X-Forwarded-For' headers, provide additional vulnerability checking (second/third request)"
+```
+```
+nuclei -list targets.txt -ai "Detect cache poisoning through 'X-Original-URL' and 'X-Rewrite-URL' headers, provide additional vulnerability checking (second/third request)"
+```
+```
+nuclei -list targets.txt -ai "Identify cache poisoning by injecting payloads in 'Referer' and 'User-Agent', provide additional vulnerability checking (second/third request)"
+```
+```
+nuclei -list targets.txt -ai "Scan for cache poisoning via malformed HTTP headers, provide additional vulnerability checking (second/third request)"
+```
+```
+nuclei -list targets.txt -ai "Detect cache poisoning vulnerabilities on Fastly and Cloudflare, provide additional vulnerability checking (second/third request)"
+```
+```
+nuclei -list targets.txt -ai "Find misconfigured Varnish caching rules exposing private data, provide additional vulnerability checking (second/third request)"
+```
+```
+nuclei -list targets.txt -ai "Identify Squid proxy cache poisoning vulnerabilitie, provide additional vulnerability checking (second/third request)"
+```
