@@ -112,7 +112,7 @@ nuclei -list katana.jsonl -im jsonl -ai "Detect SSRF by injecting internal IP ra
 nuclei -list katana.jsonl -im jsonl -ai "Identify SSRF in API requests that fetch external resources"
 nuclei -list katana.jsonl -im jsonl -ai "Scan for blind SSRF by injecting webhooks and external DNS resolver payloads"
 ```
-## Local & Remote File Inclusion
+## LFI and RFI
 ```
 nuclei -list katana.jsonl -im jsonl -ai "Perform fuzzing on all parameters and HTTP methods using DSL, focusing on detecting LFI/RFI vulnerabilities with pre-conditions."
 nuclei -list katana.jsonl -im jsonl -ai "Find LFI in 'file', 'path', 'template', 'inc', 'lang', 'page' parameters"
@@ -136,7 +136,7 @@ nuclei -list katana.jsonl -im jsonl -ai "Perform fuzzing on all XML-based inputs
 ```
 nuclei -l targets.txt -ai "Detect Host Header Injection" 
 ```
-## Cloud Security Issues
+## Cloud Recon
 ```
 nuclei -list targets.txt -ai "Detect open Docker API endpoints allowing remote access"
 nuclei -list targets.txt -ai "Detect exposed Kubernetes API servers allowing unauthenticated access"
