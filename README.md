@@ -32,7 +32,6 @@ nuclei -list targets.txt -ai "Find exposed admin panels with default credentials
 nuclei -list targets.txt -ai "Identify commonly used API endpoints that expose sensitive user data, returning HTTP status 200 OK."
 nuclei -list targets.txt -ai "Detect web applications running in debug mode, potentially exposing sensitive system information."  
 ```
-
 ## Advanced Mixed Testing
 ```
 nuclei -list targets.txt -ai "Detect debug endpoints revealing system information"  
@@ -80,7 +79,6 @@ docker run -v $(pwd):/src projectdiscovery/nuclei:latest -l /src/js_links -ai "F
 docker run -v $(pwd):/src projectdiscovery/nuclei:latest -l /src/js_links -ai "Detect corporate email addresses, internal contacts and internal resource in JavaScript files"
 docker run -v $(pwd):/src projectdiscovery/nuclei:latest -l /src/js_links -ai "Find exposed JavaScript source maps (.map files) revealing original source code"
 ```
-
 ## SQL Injection (SQLi)
 ```
 nuclei -list katana.jsonl -im jsonl -ai "Perform fuzzing on all parameters and HTTP methods using DSL, focusing on detecting SQL Injection vulnerabilities with pre-conditions."
@@ -153,22 +151,10 @@ nuclei -list targets.txt -ai "Detect GCP keys exposed in responses and write ext
 ## Web Cache Poisoning
 ```
 nuclei -list targets.txt -ai "Find web cache poisoning via 'Host", 'X-Forwarded-Host' and'X-Forwarded-For' headers, provide additional vulnerability checking (second/third request)"
-```
-```
 nuclei -list targets.txt -ai "Detect cache poisoning through 'X-Original-URL' and 'X-Rewrite-URL' headers, provide additional vulnerability checking (second/third request)"
-```
-```
 nuclei -list targets.txt -ai "Identify cache poisoning by injecting payloads in 'Referer' and 'User-Agent', provide additional vulnerability checking (second/third request)"
-```
-```
 nuclei -list targets.txt -ai "Scan for cache poisoning via malformed HTTP headers, provide additional vulnerability checking (second/third request)"
-```
-```
 nuclei -list targets.txt -ai "Detect cache poisoning vulnerabilities on Fastly and Cloudflare, provide additional vulnerability checking (second/third request)"
-```
-```
 nuclei -list targets.txt -ai "Find misconfigured Varnish caching rules exposing private data, provide additional vulnerability checking (second/third request)"
-```
-```
 nuclei -list targets.txt -ai "Identify Squid proxy cache poisoning vulnerabilitie, provide additional vulnerability checking (second/third request)"
 ```
