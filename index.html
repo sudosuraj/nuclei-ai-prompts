@@ -93,17 +93,18 @@
       try {
         const response = await fetch('readme.md');
         if (!response.ok) {
-          throw new Error('Failed to fetch prompts.');
+          throw new Error('HTTP error ' + response.status);
         }
         const text = await response.text();
         processPrompts(text);
       } catch (error) {
         console.error('Error:', error);
-        document.getElementById('promptsContainer').innerHTML = '<p>Error loading prompts.</p>';
+        document.getElementById('promptsContainer').innerHTML =
+          '<p>Error loading prompts. Please ensure you are running a local server and that <code>readme.md</code> is in the correct location.</p>';
       }
     }
 
-    // Process the content by splitting into lines and grouping by categories
+    // Process the markdown text by splitting into lines and grouping by categories.
     function processPrompts(text) {
       const container = document.getElementById('promptsContainer');
       const lines = text.split('\n');
@@ -112,7 +113,7 @@
       lines.forEach(line => {
         line = line.trim();
         if (line.startsWith('#')) {
-          // New category header (e.g., "# Recon Commands")
+          // New category header (e.g., "# Authentication Bypass")
           const categoryName = line.replace(/^#+\s*/, '');
           const categoryDiv = document.createElement('div');
           categoryDiv.classList.add('category');
