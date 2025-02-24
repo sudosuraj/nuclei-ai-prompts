@@ -62,7 +62,7 @@ nuclei -list targets.txt -ai "Find exposed server status pages (e.g., phpinfo, s
 nuclei -list targets.txt -ai "Identify sensitive configuration files (.env, .config, application.properties, settings.py)"
 nuclei -list targets.txt -ai "Scan for information leaks in HTTP responses and headers"
 ```
-## Sensitive Data Exposure Javascript Files
+## JS Recon
 ```
 nuclei -l /src/js_links -ai "Analyze JavaScript code for security vulnerabilities (XSS, CSRF, CORS misconfigurations, Clickjacking)"
 nuclei -l /src/js_links -ai "Perform a full deep JavaScript security audit: API keys, secrets, internal endpoints, debug logs, authentication tokens, and misconfigurations"  
